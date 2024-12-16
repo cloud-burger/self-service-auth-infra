@@ -18,18 +18,11 @@ Após a instalação, configure suas credenciais da AWS utilizando as seguintes 
 
 _Após a validação do JWT, o API Gateway encaminha as requisições autorizadas para o Amazon EKS._
 
-## Variáveis de Ambiente
-
-Além das variáveis de ambiente padrão do Terraform, você deve configurar a seguinte variável para personalizar o comportamento da infraestrutura:
-
-- TF_VAR_jwt_secret: Valor do segredo JWT necessário para as Lambdas.
-
 ## Instrução de Uso
 
 1. Clone este repositório.
 2. Configure suas credenciais da AWS.
-3. Defina as variáveis de ambiente necessárias, como `TF_VAR_jwt_secret`.
-4. Inicialize o Terraform executando:
+3. Inicialize o Terraform executando:
 
 ## Execução Local
 
@@ -48,7 +41,7 @@ terraform plan
 6. Aplique as configurações e crie os recursos na AWS com:
 
 ```bash
-terraform apply -var="TF_VAR_jwt_secret=******************"
+terraform apply
 ```
 
 Após a aplicação bem-sucedida, seu API Gateway estará pronto para receber e encaminhar requisições autorizadas para o Amazon EKS. Certifique-se de que todas as integrações estejam funcionando corretamente antes de colocar o ambiente em produção.

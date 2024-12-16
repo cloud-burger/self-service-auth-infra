@@ -22,11 +22,11 @@ resource "aws_api_gateway_deployment" "main" {
   rest_api_id = aws_api_gateway_rest_api.main.id
 
   depends_on = [
-    module.method_authenticate
+    module.method_authorizer
   ]
 
   triggers = {
-    redeployment = sha1(jsonencode([module.method_authenticate]))
+    redeployment = sha1(jsonencode([module.method_authorizer]))
   }
 
   lifecycle {
@@ -34,19 +34,19 @@ resource "aws_api_gateway_deployment" "main" {
   }
 }
 
-resource "aws_api_gateway_resource" "authenticate" {
+resource "aws_api_gateway_resource" "authorizer" {
   rest_api_id = aws_api_gateway_rest_api.main.id
   parent_id   = aws_api_gateway_rest_api.main.root_resource_id
-  path_part   = "authenticate"
+  path_part   = "authorizer"
 }
 
-module "method_authenticate" {
+module "method_authorizer" {
   source        = "./modules/api_gateway"
   account_id    = module.global_variables.account_id
   aws_region    = module.global_variables.aws_region
   rest_api_id   = aws_api_gateway_rest_api.main.id
-  resource_id   = aws_api_gateway_resource.authenticate.id
+  resource_id   = aws_api_gateway_resource.authorizer.id
   http_method   = "GET"
-  lambda_arn    = module.lambda_authenticate.invoke_arn
-  authorization = "AWS_IAM"
+  lambda_arn    = module.lambda_authorizer.invoke_arn
+  authorization = "NONE"
 }
