@@ -23,12 +23,12 @@ resource "aws_cognito_user_pool_client" "main_user_pool_client" {
     "email",
     "openid",
     "profile",
-    "cloud-burge/customer_write",
-    "cloud-burge/customer_read",
-    "cloud-burge/product_read",
-    "cloud-burge/product_write",
-    "cloud-burge/product_delete",
-    "cloud-burge/update_order"
+    "cloud-burger/customer_write",
+    "cloud-burger/customer_read",
+    "cloud-burger/product_read",
+    "cloud-burger/product_write",
+    "cloud-burger/product_delete",
+    "cloud-burger/update_order"
   ]
   allowed_oauth_flows_user_pool_client = true
   supported_identity_providers         = ["COGNITO"]
