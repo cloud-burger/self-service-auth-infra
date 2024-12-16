@@ -1,4 +1,4 @@
-resource "aws_cognito_user_pool" "main_user_pool" {
+resource "aws_cognito_user_pool" "main" {
   name = "cloud-burger"
 
   password_policy {
@@ -9,16 +9,19 @@ resource "aws_cognito_user_pool" "main_user_pool" {
   }
 }
 
-resource "aws_cognito_user_pool_domain" "main_user_pool_domain" {
+resource "aws_cognito_user_pool_domain" "main_domain" {
   domain       = "cloud-burger"
-  user_pool_id = aws_cognito_user_pool.main_user_pool.id
+  user_pool_id = aws_cognito_user_pool.main.id
 }
 
-resource "aws_cognito_user_pool_client" "main_user_pool_client" {
-  name         = "cloud-burger-admin-app"
-  user_pool_id = aws_cognito_user_pool.main_user_pool.id
-
-  allowed_oauth_flows = ["code"]
+resource "aws_cognito_user_pool_client" "main_client" {
+  name                                 = "cloud-burger-admin-app"
+  user_pool_id                         = aws_cognito_user_pool.main.id
+  allowed_oauth_flows_user_pool_client = true
+  supported_identity_providers         = ["COGNITO"]
+  callback_urls                        = ["http://localhost:9090/callback"]
+  generate_secret                      = true
+  allowed_oauth_flows                  = ["code"]
   allowed_oauth_scopes = [
     "email",
     "openid",
@@ -30,16 +33,10 @@ resource "aws_cognito_user_pool_client" "main_user_pool_client" {
     "cloud-burger/product_delete",
     "cloud-burger/update_order"
   ]
-  allowed_oauth_flows_user_pool_client = true
-  supported_identity_providers         = ["COGNITO"]
-
-  callback_urls = ["http://localhost:9090/callback"]
-
-  generate_secret = true
 }
 
 resource "aws_cognito_resource_server" "main_resource_server" {
-  user_pool_id = aws_cognito_user_pool.main_user_pool.id
+  user_pool_id = aws_cognito_user_pool.main.id
   identifier   = "cloud-burger"
   name         = "Recursos das rotas de administracao"
 
