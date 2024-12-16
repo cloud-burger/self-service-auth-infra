@@ -21,12 +21,8 @@ resource "aws_api_gateway_stage" "main_stage" {
 resource "aws_api_gateway_deployment" "main" {
   rest_api_id = aws_api_gateway_rest_api.main.id
 
-  depends_on = [
-    module.method_authorizer
-  ]
-
   triggers = {
-    redeployment = sha1(jsonencode([module.method_authorizer]))
+    redeployment = sha1(jsonencode([aws_api_gateway_rest_api.main]))
   }
 
   lifecycle {
@@ -34,19 +30,9 @@ resource "aws_api_gateway_deployment" "main" {
   }
 }
 
-resource "aws_api_gateway_resource" "authorizer" {
-  rest_api_id = aws_api_gateway_rest_api.main.id
-  parent_id   = aws_api_gateway_rest_api.main.root_resource_id
-  path_part   = "authorizer"
-}
-
-module "method_authorizer" {
-  source        = "./modules/api_gateway"
-  account_id    = module.global_variables.account_id
-  aws_region    = module.global_variables.aws_region
-  rest_api_id   = aws_api_gateway_rest_api.main.id
-  resource_id   = aws_api_gateway_resource.authorizer.id
-  http_method   = "GET"
-  lambda_arn    = module.lambda_authorizer.arn
-  authorization = "NONE"
+resource "aws_api_gateway_authorizer" "main" {
+  name                   = "${var.project}-main-${var.environment}"
+  rest_api_id            = aws_api_gateway_rest_api.main.id
+  authorizer_uri         = module.lambda_authorizer.invoke_arn
+  authorizer_credentials = aws_iam_role.invocation_role.arn
 }
