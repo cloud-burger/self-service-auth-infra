@@ -28,9 +28,9 @@ data "terraform_remote_state" "eks_state" {
 }
 
 locals {
-  aws_vpc_id          = data.terraform_remote_state.eks_state.vpc_id
+  aws_vpc_id          = data.terraform_remote_state.eks_state.outputs.vpc_id
   aws_private_subnets = data.terraform_remote_state.eks_state.outputs.private_subnets
-  rds_public_sg_id    = data.terraform_remote_state.database_state.rds_public_sg_id
+  rds_public_sg_id    = data.terraform_remote_state.database_state.outputs.rds_public_sg_id
 }
 
 terraform {
