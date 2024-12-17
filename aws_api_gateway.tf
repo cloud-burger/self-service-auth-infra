@@ -2,7 +2,7 @@ resource "aws_api_gateway_rest_api" "main" {
   name = "${var.project}-main-${var.environment}"
 
   body = templatefile("${path.module}/openapi.yaml", {
-    load_balancer_uri = local.eks_cluster_endpoint,
+    load_balancer_uri = "http://api.cloudburger.com.br",
     authorizer_uri = module.lambda_authorizer.invoke_arn,
     authorizer_credentials = aws_iam_role.invocation_role.arn,
     provider_arn = aws_cognito_user_pool.main.arn,
