@@ -3,7 +3,7 @@ variable "environment" {
 }
 
 variable "region" {
-  default = "us-east-2"
+  default = "us-east-1"
 }
 
 variable "project" {
