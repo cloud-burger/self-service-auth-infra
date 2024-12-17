@@ -75,7 +75,7 @@ paths:
         httpMethod: POST
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
-        uri: http://api.cloudburger.com.br/product
+        uri: ${load_balancer_uri}/product
         
   /product/{id}:
     put:
@@ -103,10 +103,11 @@ paths:
         '500':
           $ref: '#/components/responses/InternalServerError'
       x-amazon-apigateway-integration:
-        uri: ${load_balancer_uri}/product/{id}
+        type: HTTP_PROXY
         httpMethod: PUT
-        type: HTTP
-        passthroughBehavior: WHEN_NO_MATCH
+        connectionType: VPC_LINK
+        connectionId: ${vpc_link_id}
+        uri: ${load_balancer_uri}/product/{id}
   #   delete:
   #     tags:
   #       - Product
