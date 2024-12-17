@@ -7,8 +7,6 @@ provider "aws" {
   region = module.global_variables.aws_region
 }
 
-<<<<<<< Updated upstream
-=======
 data "terraform_remote_state" "database_state" {
   backend = "s3"
 
@@ -35,11 +33,16 @@ locals {
   rds_public_sg_id    = data.terraform_remote_state.database_state.rds_public_sg_id
 }
 
->>>>>>> Stashed changes
 terraform {
   backend "s3" {
     bucket = "cloud-burger-states"
     key    = "prod/lambdas.tfstate"
     region = "us-east-1"
+  }
+}
+
+data "aws_lb" "loadbalancer" {
+  tags = {
+    "service.k8s.aws/stack" = "istio-ingress/istio-ingress",
   }
 }
