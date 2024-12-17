@@ -16,6 +16,6 @@ module "lambda_authorizer" {
     DATABASE_PASSWORD           = data.aws_ssm_parameter.database_password.value
     DATABASE_PORT               = data.aws_ssm_parameter.database_port.value
     DATABASE_HOST               = data.aws_ssm_parameter.database_host.value
-    DATABASE_CONNECTION_TIMEOUT = 120
+    DATABASE_CONNECTION_TIMEOUT = 120000
   }
 }
