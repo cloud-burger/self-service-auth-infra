@@ -56,3 +56,8 @@ resource "aws_iam_policy_attachment" "lambda_vpc_policy" {
   policy_arn = "arn:aws:iam::aws:policy/AmazonVPCFullAccess"
 }
 
+resource "aws_iam_policy_attachment" "lambda_cloudwatch_policy" {
+  name       = "lambda_cloudwatch_policy"
+  roles      = [aws_iam_role.lambda_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/CloudWatchFullAccess"
+}
