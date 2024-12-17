@@ -11,42 +11,58 @@ servers:
   - url: http://localhost:8080
     description: Local running
 paths:
-  # /customer:
-  #   post:
-  #     tags:
-  #       - Customer
-  #     summary: Create customer
-  #     description: API responsible for creating customers
-  #     requestBody:
-  #       required: true
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/CreateCustomerRequest'
-  #     responses:
-  #       '201':
-  #         $ref: '#/components/responses/CreateCustomer'
-  #       '400':
-  #         $ref: '#/components/responses/BadRequest'
-  #       '409':
-  #         $ref: '#/components/responses/ConflictError'
-  #       '500':
-  #         $ref: '#/components/responses/InternalServerError'
-  # /customer/{documentNumber}:
-  #   get:
-  #     tags:
-  #       - Customer
-  #     summary: Find customer by document number
-  #     description: API responsible for finding customer by document number
-  #     parameters:
-  #       - $ref: '#/components/parameters/DocumentNumber'
-  #     responses:
-  #       '201':
-  #         $ref: '#/components/responses/FindCustomerByDocumentNumber'
-  #       '404':
-  #         $ref: '#/components/responses/NotFound'
-  #       '500':
-  #         $ref: '#/components/responses/InternalServerError'
+  /customer:
+    post:
+      tags:
+        - Customer
+      summary: Create customer
+      description: API responsible for creating customers
+      security:
+        - cloud-burger-authorizer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateCustomerRequest"
+      responses:
+        "201":
+          $ref: "#/components/responses/CreateCustomer"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
+          $ref: "#/components/responses/ConflictError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      x-amazon-apigateway-integration:
+        type: HTTP_PROXY
+        httpMethod: POST
+        connectionType: VPC_LINK
+        connectionId: ${vpc_link_id}
+        uri: ${load_balancer_uri}/customer
+  /customer/{documentNumber}:
+    get:
+      tags:
+        - Customer
+      summary: Find customer by document number
+      description: API responsible for finding customer by document number
+      security:
+        - cloud-burger-authorizer: []
+      parameters:
+        - $ref: "#/components/parameters/DocumentNumber"
+      responses:
+        "201":
+          $ref: "#/components/responses/FindCustomerByDocumentNumber"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      x-amazon-apigateway-integration:
+        type: HTTP_PROXY
+        httpMethod: GET
+        connectionType: VPC_LINK
+        connectionId: ${vpc_link_id}
+        uri: ${load_balancer_uri}/customer/{documentNumber}
   /product:
     post:
       tags:
@@ -54,29 +70,28 @@ paths:
       summary: Create product
       description: API responsible for creating product
       security:
-        - cloud-burger-cognito: ['cloud-burger/product_write']
+        - cloud-burger-cognito: ["cloud-burger/product_write"]
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/CreateProductRequest'
+              $ref: "#/components/schemas/CreateProductRequest"
       responses:
-        '201':
-          $ref: '#/components/responses/CreateProduct'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '409':
-          $ref: '#/components/responses/ConflictError'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+        "201":
+          $ref: "#/components/responses/CreateProduct"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "409":
+          $ref: "#/components/responses/ConflictError"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       x-amazon-apigateway-integration:
         type: HTTP_PROXY
         httpMethod: POST
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
         uri: ${load_balancer_uri}/product
-        
   /product/{id}:
     put:
       tags:
@@ -84,194 +99,250 @@ paths:
       summary: Update product
       description: API responsible for updating product
       security:
-        - cloud-burger-authorizer: []
+        - cloud-burger-cognito: ["cloud-burger/product_write"]
       parameters:
-        - $ref: '#/components/parameters/Id'
+        - $ref: "#/components/parameters/Id"
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UpdateProductRequest'
+              $ref: "#/components/schemas/UpdateProductRequest"
       responses:
-        '200':
-          $ref: '#/components/responses/UpdateProduct'
-        '400':
-          $ref: '#/components/responses/BadRequest'
-        '404':
-          $ref: '#/components/responses/NotFound'
-        '500':
-          $ref: '#/components/responses/InternalServerError'
+        "200":
+          $ref: "#/components/responses/UpdateProduct"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
       x-amazon-apigateway-integration:
         type: HTTP_PROXY
         httpMethod: PUT
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
         uri: ${load_balancer_uri}/product/{id}
-  #   delete:
-  #     tags:
-  #       - Product
-  #     summary: Delete product
-  #     description: API responsible for deleting product
-  #     parameters:
-  #       - $ref: '#/components/parameters/Id'
-  #     responses:
-  #       '204':
-  #         $ref: '#/components/responses/NoContent'
-  #       '400':
-  #         $ref: '#/components/responses/BadRequest'
-  #       '404':
-  #         $ref: '#/components/responses/NotFound'
-  #       '500':
-  #         $ref: '#/components/responses/InternalServerError'
-  # /product/{category}:
-  #   get: 
-  #     tags:
-  #       - Product
-  #     summary: Find products by category
-  #     description: API responsible for finding products by category
-  #     parameters:
-  #       - $ref: '#/components/parameters/Category'
-  #     responses:
-  #       '200':
-  #         $ref: '#/components/responses/FindProductByCategory'
-  #       '500':
-  #         $ref: '#/components/responses/InternalServerError'
-  # /order:
-  #   post:
-  #     tags:
-  #       - Order
-  #     summary: Create order
-  #     description: API responsible for creating order
-  #     parameters:
-  #       - $ref: '#/components/parameters/XIdentification'
-  #     requestBody:
-  #       required: true
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/CreateOrderRequest'
-  #     responses:
-  #       '201':
-  #         $ref: '#/components/responses/CreateOrder'
-  #       '400':
-  #         $ref: '#/components/responses/BadRequest'
-  #       '500':
-  #         $ref: '#/components/responses/InternalServerError'
-  #   get: 
-  #     tags:
-  #       - Order
-  #     summary: List orders
-  #     description: API responsible for listing orders
-  #     parameters:
-  #       - $ref: '#/components/parameters/PageSize'
-  #       - $ref: '#/components/parameters/PageNumber'
-  #       - $ref: '#/components/parameters/OrderStatus'
-  #     responses:
-  #       '200':
-  #         $ref: '#/components/responses/ListOrders'
-  #       '400':
-  #         $ref: '#/components/responses/BadRequest'
-  #       '500':
-  #         $ref: '#/components/responses/InternalServerError'
-  # /order/{id}:
-  #   put:
-  #     tags:
-  #       - Order
-  #     summary: Update order status
-  #     description: API responsible for updating order status
-  #     parameters:
-  #       - $ref: '#/components/parameters/Id'
-  #     requestBody:
-  #       required: true
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/UpdateOrderStatusRequest'
-  #     responses:
-  #       '200':
-  #         $ref: '#/components/responses/CreateOrder'
-  #       '400':
-  #         $ref: '#/components/responses/BadRequest'
-  #       '500':
-  #         $ref: '#/components/responses/InternalServerError'
-  # /payment/{id}:
-  #   get:
-  #     tags:
-  #       - Payment
-  #     summary: Find payment by order id
-  #     description: API responsible for finding payment by order id
-  #     parameters:
-  #       - $ref: '#/components/parameters/Id'
-  #     responses:
-  #       '200':
-  #         $ref: '#/components/responses/FindPaymentByOrderId'
-  #       '404':
-  #         $ref: '#/components/responses/NotFound'
-  #       '500':
-  #         $ref: '#/components/responses/InternalServerError'
-  # /payment:
-  #   post:
-  #     tags:
-  #       - Payment
-  #     summary: Create payment
-  #     description: API responsible for creating payment
-  #     requestBody:
-  #       required: true
-  #       content:
-  #         application/json:
-  #           schema:
-  #             $ref: '#/components/schemas/CreatePaymentRequest'
-  #     responses:
-  #       '200':
-  #         $ref: '#/components/responses/CreatePayment'
-  #       '400':
-  #         $ref: '#/components/responses/BadRequest'
-  #       '500':
-  #         $ref: '#/components/responses/InternalServerError'
+    delete:
+      tags:
+        - Product
+      summary: Delete product
+      description: API responsible for deleting product
+      security:
+        - cloud-burger-cognito: ["cloud-burger/product_write"]
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "204":
+          $ref: "#/components/responses/NoContent"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      x-amazon-apigateway-integration:
+        type: HTTP_PROXY
+        httpMethod: DELETE
+        connectionType: VPC_LINK
+        connectionId: ${vpc_link_id}
+        uri: ${load_balancer_uri}/product/{id}
+  /product/category:
+    get:
+      tags:
+        - Product
+      summary: Find products by category
+      description: API responsible for finding products by category
+      security:
+        - cloud-burger-cognito: ["cloud-burger/product_read"]
+      parameters:
+        - $ref: "#/components/parameters/Category"
+      responses:
+        "200":
+          $ref: "#/components/responses/FindProductByCategory"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      x-amazon-apigateway-integration:
+        type: HTTP_PROXY
+        httpMethod: GET
+        connectionType: VPC_LINK
+        connectionId: ${vpc_link_id}
+        uri: ${load_balancer_uri}/product/category
+  /order:
+    post:
+      tags:
+        - Order
+      summary: Create order
+      description: API responsible for creating order
+      security:
+        - cloud-burger-authorizer: []
+      parameters:
+        - $ref: "#/components/parameters/XIdentification"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateOrderRequest"
+      responses:
+        "201":
+          $ref: "#/components/responses/CreateOrder"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      x-amazon-apigateway-integration:
+        type: HTTP_PROXY
+        httpMethod: POST
+        connectionType: VPC_LINK
+        connectionId: ${vpc_link_id}
+        uri: ${load_balancer_uri}/order
+    get:
+      tags:
+        - Order
+      summary: List orders
+      description: API responsible for listing orders
+      security:
+        - cloud-burger-cognito: ["cloud-burger/order_read"]
+      parameters:
+        - $ref: "#/components/parameters/PageSize"
+        - $ref: "#/components/parameters/PageNumber"
+        - $ref: "#/components/parameters/OrderStatus"
+      responses:
+        "200":
+          $ref: "#/components/responses/ListOrders"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      x-amazon-apigateway-integration:
+        type: HTTP_PROXY
+        httpMethod: GET
+        connectionType: VPC_LINK
+        connectionId: ${vpc_link_id}
+        uri: ${load_balancer_uri}/order
+  /order/{id}:
+    put:
+      tags:
+        - Order
+      summary: Update order status
+      description: API responsible for updating order status
+      security:
+        - cloud-burger-cognito: ["cloud-burger/order_write"]
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateOrderStatusRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/CreateOrder"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      x-amazon-apigateway-integration:
+        type: HTTP_PROXY
+        httpMethod: PUT
+        connectionType: VPC_LINK
+        connectionId: ${vpc_link_id}
+        uri: ${load_balancer_uri}/order/{id}
+  /payment/{id}:
+    get:
+      tags:
+        - Payment
+      summary: Find payment by order id
+      description: API responsible for finding payment by order id
+      security:
+        - cloud-burger-cognito: ["cloud-burger/payment_read"]
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          $ref: "#/components/responses/FindPaymentByOrderId"
+        "404":
+          $ref: "#/components/responses/NotFound"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      x-amazon-apigateway-integration:
+        type: HTTP_PROXY
+        httpMethod: GET
+        connectionType: VPC_LINK
+        connectionId: ${vpc_link_id}
+        uri: ${load_balancer_uri}/payment/{id}
+  /payment:
+    post:
+      tags:
+        - Payment
+      summary: Create payment
+      description: API responsible for creating payment
+      security:
+        - cloud-burger-authorizer: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreatePaymentRequest"
+      responses:
+        "200":
+          $ref: "#/components/responses/CreatePayment"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      x-amazon-apigateway-integration:
+        type: HTTP_PROXY
+        httpMethod: POST
+        connectionType: VPC_LINK
+        connectionId: ${vpc_link_id}
+        uri: ${load_balancer_uri}/payment
 components:
   parameters:
     PageSize:
       in: query
       name: pageSize
       schema:
-        $ref: '#/components/schemas/PageSize'
+        $ref: "#/components/schemas/PageSize"
       required: true
     PageNumber:
       in: query
       name: pageNumber
       schema:
-        $ref: '#/components/schemas/PageNumber'
+        $ref: "#/components/schemas/PageNumber"
       required: true
     OrderStatus:
       in: query
       name: status
       schema:
-        $ref: '#/components/schemas/OrderStatus'
+        $ref: "#/components/schemas/OrderStatus"
       required: false
     Id:
       in: path
       name: id
       schema:
-        $ref: '#/components/schemas/Id'
+        $ref: "#/components/schemas/Id"
       required: true
     XIdentification:
       in: header
       name: x-identification
       schema:
-        $ref: '#/components/schemas/DocumentNumber'
+        $ref: "#/components/schemas/DocumentNumber"
       required: false
     Category:
-      in: path
+      in: query
       name: category
       schema:
-        $ref: '#/components/schemas/ProductCategory'
-      required: true
+        $ref: "#/components/schemas/ProductCategory"
+      required: false
     DocumentNumber:
       in: path
       name: documentNumber
       schema:
-        $ref: '#/components/schemas/DocumentNumber'
+        $ref: "#/components/schemas/DocumentNumber"
       required: true
   responses:
     CreateCustomer:
@@ -279,55 +350,55 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/CustomerResponse'
+            $ref: "#/components/schemas/CustomerResponse"
     FindCustomerByDocumentNumber:
       description: Customer found
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/CustomerResponse'
+            $ref: "#/components/schemas/CustomerResponse"
     CreateProduct:
       description: Product created successfully
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ProductResponse'
+            $ref: "#/components/schemas/ProductResponse"
     UpdateProduct:
       description: Product updated successfully
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ProductResponse'
+            $ref: "#/components/schemas/ProductResponse"
     FindProductByCategory:
       description: Product deleted successfully
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ProductsResponse'
+            $ref: "#/components/schemas/ProductsResponse"
     CreateOrder:
       description: Order created successfully
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/OrderResponse'
+            $ref: "#/components/schemas/OrderResponse"
     ListOrders:
       description: List orders successfully
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ListOrdersResponse'
+            $ref: "#/components/schemas/ListOrdersResponse"
     FindPaymentByOrderId:
       description: Payment found
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/FindPaymentResponse'
+            $ref: "#/components/schemas/FindPaymentResponse"
     CreatePayment:
       description: Payment created
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/PaymentResponse'
+            $ref: "#/components/schemas/PaymentResponse"
     NoContent:
       description: No Content
     BadRequest:
@@ -335,25 +406,25 @@ components:
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/BadRequestErrorResponse'
+            $ref: "#/components/schemas/BadRequestErrorResponse"
     ConflictError:
       description: Conflic Error
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/ConflictErrorResponse'
+            $ref: "#/components/schemas/ConflictErrorResponse"
     NotFound:
       description: Not Found
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/NotFoundErrorResponse'
+            $ref: "#/components/schemas/NotFoundErrorResponse"
     InternalServerError:
       description: Bad Request
       content:
         application/json:
           schema:
-            $ref: '#/components/schemas/InternalServerErrorResponse'
+            $ref: "#/components/schemas/InternalServerErrorResponse"
   schemas:
     Id:
       type: string
@@ -369,7 +440,7 @@ components:
       description: Page number
     DocumentNumber:
       type: string
-      example: '53523992060'
+      example: "53523992060"
       description: Customer document number
     CustomerName:
       type: string
@@ -448,114 +519,114 @@ components:
       type: object
       properties:
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: "#/components/schemas/Id"
         documentNumber:
-          $ref: '#/components/schemas/DocumentNumber'
+          $ref: "#/components/schemas/DocumentNumber"
         name:
-          $ref: '#/components/schemas/CustomerName'
+          $ref: "#/components/schemas/CustomerName"
         email:
-          $ref: '#/components/schemas/CustomerEmail'
+          $ref: "#/components/schemas/CustomerEmail"
     ListOrdersResponse:
       type: array
-      items: 
-        $ref: '#/components/schemas/OrderResponse'
+      items:
+        $ref: "#/components/schemas/OrderResponse"
     OrderResponse:
       type: object
       properties:
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: "#/components/schemas/Id"
         amount:
-          $ref: '#/components/schemas/Amount'
+          $ref: "#/components/schemas/Amount"
         number:
-          $ref: '#/components/schemas/Number'
+          $ref: "#/components/schemas/Number"
         customer:
-          $ref: '#/components/schemas/CustomerResponse'
+          $ref: "#/components/schemas/CustomerResponse"
         status:
-          $ref: '#/components/schemas/OrderStatus'
+          $ref: "#/components/schemas/OrderStatus"
         products:
-          $ref: '#/components/schemas/OrderProductsResponse'
+          $ref: "#/components/schemas/OrderProductsResponse"
     ProductsResponse:
       type: array
       items:
-        $ref: '#/components/schemas/ProductResponse'
+        $ref: "#/components/schemas/ProductResponse"
     ProductResponse:
       type: object
       properties:
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: "#/components/schemas/Id"
         name:
-          $ref: '#/components/schemas/ProductName'
+          $ref: "#/components/schemas/ProductName"
         category:
-          $ref: '#/components/schemas/ProductCategory'
+          $ref: "#/components/schemas/ProductCategory"
         description:
-          $ref: '#/components/schemas/ProductDescription'
+          $ref: "#/components/schemas/ProductDescription"
         amount:
-          $ref: '#/components/schemas/Amount'
+          $ref: "#/components/schemas/Amount"
         image:
-          $ref: '#/components/schemas/ProductImage'
+          $ref: "#/components/schemas/ProductImage"
     OrderProductsResponse:
       type: array
       items:
-        $ref: '#/components/schemas/OrderProductResponse'
+        $ref: "#/components/schemas/OrderProductResponse"
     OrderProductResponse:
       type: object
       properties:
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: "#/components/schemas/Id"
         name:
-          $ref: '#/components/schemas/ProductName'
+          $ref: "#/components/schemas/ProductName"
         category:
-          $ref: '#/components/schemas/ProductCategory'
+          $ref: "#/components/schemas/ProductCategory"
         description:
-          $ref: '#/components/schemas/ProductDescription'
+          $ref: "#/components/schemas/ProductDescription"
         amount:
-          $ref: '#/components/schemas/Amount'
+          $ref: "#/components/schemas/Amount"
         image:
-          $ref: '#/components/schemas/ProductImage'
+          $ref: "#/components/schemas/ProductImage"
         notes:
-          $ref: '#/components/schemas/ProductNotes'
+          $ref: "#/components/schemas/ProductNotes"
         quantity:
-          $ref: '#/components/schemas/ProductQuantity'
+          $ref: "#/components/schemas/ProductQuantity"
     PaymentResponse:
       type: object
       properties:
         id:
-          $ref: '#/components/schemas/Id'
-        amount: 
-          $ref: '#/components/schemas/Amount'
+          $ref: "#/components/schemas/Id"
+        amount:
+          $ref: "#/components/schemas/Amount"
         status:
-          $ref: '#/components/schemas/PaymentStatus'
+          $ref: "#/components/schemas/PaymentStatus"
         orderId:
-          $ref: '#/components/schemas/Id'
-        emv: 
-          $ref: '#/components/schemas/Emv'
+          $ref: "#/components/schemas/Id"
+        emv:
+          $ref: "#/components/schemas/Emv"
     FindPaymentResponse:
       type: object
       properties:
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: "#/components/schemas/Id"
         status:
-          $ref: '#/components/schemas/PaymentStatus'
+          $ref: "#/components/schemas/PaymentStatus"
     NotFoundErrorResponse:
       type: object
       properties:
         reason:
-          $ref: '#/components/schemas/Reason'
+          $ref: "#/components/schemas/Reason"
     InternalServerErrorResponse:
       type: object
       properties:
         reason:
-          $ref: '#/components/schemas/Reason'
+          $ref: "#/components/schemas/Reason"
     ConflictErrorResponse:
       type: object
       properties:
         reason:
-          $ref: '#/components/schemas/Reason'
+          $ref: "#/components/schemas/Reason"
     BadRequestErrorResponse:
       type: object
       properties:
         reason:
-          $ref: '#/components/schemas/Reason'
+          $ref: "#/components/schemas/Reason"
         invalidParams:
           type: array
           items:
@@ -568,7 +639,7 @@ components:
               value:
                 type: string
                 description: Field value
-                example: '1'
+                example: "1"
               reason:
                 type: string
                 description: Invalid param reason
@@ -577,63 +648,63 @@ components:
       type: object
       properties:
         documentNumber:
-          $ref: '#/components/schemas/DocumentNumber'
+          $ref: "#/components/schemas/DocumentNumber"
         name:
-          $ref: '#/components/schemas/CustomerName'
+          $ref: "#/components/schemas/CustomerName"
         email:
-          $ref: '#/components/schemas/CustomerEmail'
+          $ref: "#/components/schemas/CustomerEmail"
     CreateOrderRequest:
       type: object
       properties:
         products:
           type: array
-          items: 
-            $ref: '#/components/schemas/CreateOrderProductRequest'
-    CreateOrderProductRequest: 
+          items:
+            $ref: "#/components/schemas/CreateOrderProductRequest"
+    CreateOrderProductRequest:
       type: object
       properties:
         id:
-          $ref: '#/components/schemas/Id'
+          $ref: "#/components/schemas/Id"
         quantity:
-          $ref: '#/components/schemas/ProductQuantity'
-        notes: 
-          $ref: '#/components/schemas/ProductNotes'
+          $ref: "#/components/schemas/ProductQuantity"
+        notes:
+          $ref: "#/components/schemas/ProductNotes"
     UpdateOrderStatusRequest:
       type: object
       properties:
         status:
-          $ref: '#/components/schemas/OrderStatus'
+          $ref: "#/components/schemas/OrderStatus"
     CreatePaymentRequest:
       type: object
       properties:
         orderId:
-          $ref: '#/components/schemas/Id'
+          $ref: "#/components/schemas/Id"
     CreateProductRequest:
       type: object
       properties:
         name:
-          $ref: '#/components/schemas/ProductName'
+          $ref: "#/components/schemas/ProductName"
         category:
-          $ref: '#/components/schemas/ProductCategory'
+          $ref: "#/components/schemas/ProductCategory"
         description:
-          $ref: '#/components/schemas/ProductDescription'
+          $ref: "#/components/schemas/ProductDescription"
         amount:
-          $ref: '#/components/schemas/ProductAmount'
+          $ref: "#/components/schemas/ProductAmount"
         image:
-          $ref: '#/components/schemas/ProductImage'
+          $ref: "#/components/schemas/ProductImage"
     UpdateProductRequest:
       type: object
       properties:
         name:
-          $ref: '#/components/schemas/ProductName'
+          $ref: "#/components/schemas/ProductName"
         category:
-          $ref: '#/components/schemas/ProductCategory'
+          $ref: "#/components/schemas/ProductCategory"
         description:
-          $ref: '#/components/schemas/ProductDescription'
+          $ref: "#/components/schemas/ProductDescription"
         amount:
-          $ref: '#/components/schemas/ProductAmount'
+          $ref: "#/components/schemas/ProductAmount"
         image:
-          $ref: '#/components/schemas/ProductImage'
+          $ref: "#/components/schemas/ProductImage"
   securitySchemes:
     cloud-burger-cognito:
       type: apiKey
@@ -644,10 +715,9 @@ components:
         type: COGNITO_USER_POOLS
         providerARNs:
           - ${provider_arn}
-
     cloud-burger-authorizer:
       type: apiKey
-      name: 'x-identification'
+      name: "x-identification"
       in: header
       x-amazon-apigateway-authtype: CUSTOM
       x-amazon-apigateway-authorizer:
