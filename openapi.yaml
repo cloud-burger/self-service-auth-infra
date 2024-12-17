@@ -63,6 +63,8 @@ paths:
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
         uri: ${load_balancer_uri}/customer/{documentNumber}
+        requestParameters:
+          integration.request.path.documentNumber: method.request.path.documentNumber
   /product:
     post:
       tags:
@@ -143,6 +145,8 @@ paths:
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
         uri: ${load_balancer_uri}/product/{id}
+        requestParameters:
+          integration.request.path.id: method.request.path.id
     delete:
       tags:
         - Product
@@ -167,6 +171,8 @@ paths:
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
         uri: ${load_balancer_uri}/product/{id}
+        requestParameters:
+          integration.request.path.id: method.request.path.id
   /order:
     post:
       tags:
@@ -249,6 +255,8 @@ paths:
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
         uri: ${load_balancer_uri}/order/{id}
+        requestParameters:
+          integration.request.path.id: method.request.path.id
   /payment/{id}:
     get:
       tags:
@@ -272,6 +280,8 @@ paths:
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
         uri: ${load_balancer_uri}/payment/{id}
+        requestParameters:
+          integration.request.path.id: method.request.path.id
   /payment:
     post:
       tags:
