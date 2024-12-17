@@ -92,6 +92,26 @@ paths:
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
         uri: ${load_balancer_uri}/product
+    get:
+      tags:
+        - Product
+      summary: Find products by category
+      description: API responsible for finding products by category
+      security:
+        - cloud-burger-cognito: ["cloud-burger/product_read"]
+      parameters:
+        - $ref: "#/components/parameters/Category"
+      responses:
+        "200":
+          $ref: "#/components/responses/FindProductByCategory"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      x-amazon-apigateway-integration:
+        type: HTTP_PROXY
+        httpMethod: GET
+        connectionType: VPC_LINK
+        connectionId: ${vpc_link_id}
+        uri: ${load_balancer_uri}/product/category
   /product/{id}:
     put:
       tags:
@@ -147,27 +167,6 @@ paths:
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
         uri: ${load_balancer_uri}/product/{id}
-  /product/category:
-    get:
-      tags:
-        - Product
-      summary: Find products by category
-      description: API responsible for finding products by category
-      security:
-        - cloud-burger-cognito: ["cloud-burger/product_read"]
-      parameters:
-        - $ref: "#/components/parameters/Category"
-      responses:
-        "200":
-          $ref: "#/components/responses/FindProductByCategory"
-        "500":
-          $ref: "#/components/responses/InternalServerError"
-      x-amazon-apigateway-integration:
-        type: HTTP_PROXY
-        httpMethod: GET
-        connectionType: VPC_LINK
-        connectionId: ${vpc_link_id}
-        uri: ${load_balancer_uri}/product/category
   /order:
     post:
       tags:
