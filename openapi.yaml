@@ -100,7 +100,7 @@ paths:
       summary: Find products by category
       description: API responsible for finding products by category
       security:
-        - cloud-burger-cognito: ["cloud-burger/product_read"]
+        - cloud-burger-authorizer: []
       parameters:
         - $ref: "#/components/parameters/Category"
       responses:
@@ -153,7 +153,7 @@ paths:
       summary: Delete product
       description: API responsible for deleting product
       security:
-        - cloud-burger-cognito: ["cloud-burger/product_write"]
+        - cloud-burger-cognito: ["cloud-burger/product_delete"]
       parameters:
         - $ref: "#/components/parameters/Id"
       responses:
@@ -208,7 +208,7 @@ paths:
       summary: List orders
       description: API responsible for listing orders
       security:
-        - cloud-burger-cognito: ["cloud-burger/order_read"]
+        - cloud-burger-authorizer: []
       parameters:
         - $ref: "#/components/parameters/PageSize"
         - $ref: "#/components/parameters/PageNumber"
@@ -233,7 +233,7 @@ paths:
       summary: Update order status
       description: API responsible for updating order status
       security:
-        - cloud-burger-cognito: ["cloud-burger/order_write"]
+        - cloud-burger-cognito: ["cloud-burger/update_order"]
       parameters:
         - $ref: "#/components/parameters/Id"
       requestBody:
