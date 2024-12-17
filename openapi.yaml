@@ -104,7 +104,7 @@ paths:
           $ref: '#/components/responses/InternalServerError'
       x-amazon-apigateway-integration:
         type: HTTP_PROXY
-        httpMethod: POST
+        httpMethod: PUT
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
         uri: ${load_balancer_uri}/product/{id}
