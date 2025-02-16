@@ -11,14 +11,7 @@ resource "aws_iam_role" "lambda_role" {
           Service = "lambda.amazonaws.com"
         },
         Effect = "Allow"
-      },
-      {
-        Effect = "Allow",
-        Action = [
-          "dynamodb:Query"
-        ],
-        Resource = "arn:aws:dynamodb:us-east-1:594646746001:table/self-service-customers-prod"
-      },
+      }
     ]
   })
 }
@@ -39,4 +32,10 @@ resource "aws_iam_policy_attachment" "lambda_cloudwatch_policy" {
   name       = "lambda_cloudwatch_policy"
   roles      = [aws_iam_role.lambda_role.name]
   policy_arn = "arn:aws:iam::aws:policy/CloudWatchFullAccess"
+}
+
+resource "aws_iam_policy_attachment" "lambda_dynamodb_policy" {
+  name       = "lambda_dynamodb_policy"
+  roles      = [aws_iam_role.lambda_role.name]
+  policy_arn = "arn:aws:iam::aws:policy/AmazonDynamoDBReadOnlyAccess"
 }
