@@ -11,11 +11,6 @@ module "lambda_authorizer" {
   source_code_hash   = base64encode(sha256("${var.commit_hash}"))
 
   environment_variables = {
-    DATABASE_USERNAME           = data.aws_ssm_parameter.database_username.value
-    DATABASE_NAME               = data.aws_ssm_parameter.database_name.value
-    DATABASE_PASSWORD           = data.aws_ssm_parameter.database_password.value
-    DATABASE_PORT               = data.aws_ssm_parameter.database_port.value
-    DATABASE_HOST               = data.aws_ssm_parameter.database_host.value
-    DATABASE_CONNECTION_TIMEOUT = 120000
+    DADYNAMO_TABLE_CUSTOMERS = locals.aws_dynamodb_table_customers
   }
 }

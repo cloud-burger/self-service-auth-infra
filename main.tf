@@ -7,30 +7,30 @@ provider "aws" {
   region = module.global_variables.aws_region
 }
 
-data "terraform_remote_state" "database_state" {
+data "terraform_remote_state" "customers_state" {
   backend = "s3"
 
   config = {
     bucket = "cloud-burger-states"
-    key    = "prod/database.tfstate"
+    key    = "prod/customers/terraform.tfstate"
     region = "us-east-1"
   }
 }
 
-data "terraform_remote_state" "eks_state" {
+data "terraform_remote_state" "iac_state" {
   backend = "s3"
 
   config = {
     bucket = "cloud-burger-states"
-    key    = "prod/eks.tfstate"
+    key    = "prod/iac.tfstate"
     region = "us-east-1"
   }
 }
 
 locals {
-  aws_vpc_id          = data.terraform_remote_state.eks_state.outputs.vpc_id
-  aws_private_subnets = data.terraform_remote_state.eks_state.outputs.private_subnets
-  rds_public_sg_id    = data.terraform_remote_state.database_state.outputs.rds_public_sg_id
+  aws_vpc_id                   = data.terraform_remote_state.iac_state.outputs.vpc_id
+  aws_private_subnets          = data.terraform_remote_state.iac_state.outputs.private_subnets
+  aws_dynamodb_table_customers = data.terraform_remote_state.customers_state.outputs.aws_dynamodb_table_customers
 }
 
 terraform {

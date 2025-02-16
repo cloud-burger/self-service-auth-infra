@@ -44,12 +44,6 @@ resource "aws_iam_policy_attachment" "lambda_policy_attachment" {
   policy_arn = "arn:aws:iam::aws:policy/AWSLambda_FullAccess"
 }
 
-resource "aws_iam_policy_attachment" "lambda_rds_policy" {
-  name       = "lambda_rds_policy"
-  roles      = [aws_iam_role.lambda_role.name]
-  policy_arn = "arn:aws:iam::aws:policy/AmazonRDSReadOnlyAccess"
-}
-
 resource "aws_iam_policy_attachment" "lambda_vpc_policy" {
   name       = "lambda_vpc_policy"
   roles      = [aws_iam_role.lambda_role.name]
