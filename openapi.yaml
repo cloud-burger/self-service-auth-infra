@@ -227,6 +227,30 @@ paths:
         connectionId: ${vpc_link_id}
         uri: ${load_balancer_uri}/orders
   /orders/{id}:
+    get:
+      tags:
+        - Order
+      summary: Find order by id
+      description: API responsible for find order by id
+      security:
+        - cloud-burger-cognito: []
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "200":
+          $ref: "#/components/responses/FindOrderById"
+        "400":
+          $ref: "#/components/responses/BadRequest"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      x-amazon-apigateway-integration:
+        type: HTTP_PROXY
+        httpMethod: GET
+        connectionType: VPC_LINK
+        connectionId: ${vpc_link_id}
+        uri: ${load_balancer_uri}/orders/{id}
+        requestParameters:
+          integration.request.path.id: method.request.path.id
     put:
       tags:
         - Order
@@ -386,6 +410,12 @@ components:
             $ref: "#/components/schemas/ProductsResponse"
     CreateOrder:
       description: Order created successfully
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/OrderResponse"
+    FindOrderById:
+      description: Order found successfully
       content:
         application/json:
           schema:
