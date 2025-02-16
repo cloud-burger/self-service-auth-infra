@@ -13,11 +13,11 @@ resource "aws_iam_role" "lambda_role" {
         Effect = "Allow"
       },
       {
-        Effect : "Allow",
-        Action : [
+        Effect = "Allow",
+        Action = [
           "dynamodb:Query"
         ],
-        Resource : "arn:aws:dynamodb:us-east-1:594646746001:table/self-service-customers-prod"
+        Resource = "arn:aws:dynamodb:us-east-1:594646746001:table/self-service-customers-prod"
       },
     ]
   })
