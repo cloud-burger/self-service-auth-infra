@@ -232,8 +232,6 @@ paths:
         - Order
       summary: Find order by id
       description: API responsible for find order by id
-      security:
-        - cloud-burger-cognito: []
       parameters:
         - $ref: "#/components/parameters/Id"
       responses:
@@ -333,6 +331,25 @@ paths:
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
         uri: ${load_balancer_uri}/payments
+  /webhook:
+    post:
+      tags:
+        - Webhook
+      summary: Payment Webhook
+      description: API responsible for process payment events
+      parameters:
+        - $ref: "#/components/parameters/Id"
+      responses:
+        "202":
+          $ref: "#/components/responses/NoContent"
+        "500":
+          $ref: "#/components/responses/InternalServerError"
+      x-amazon-apigateway-integration:
+        type: HTTP_PROXY
+        httpMethod: POST
+        connectionType: VPC_LINK
+        connectionId: ${vpc_link_id}
+        uri: ${load_balancer_uri}/webhook
 components:
   parameters:
     PageSize:
