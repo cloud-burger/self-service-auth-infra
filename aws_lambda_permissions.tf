@@ -14,30 +14,6 @@ resource "aws_iam_role" "lambda_role" {
   })
 }
 
-resource "aws_iam_policy" "ssm_policy" {
-  name        = "ssm_policy"
-  description = "SSM Policy"
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect = "Allow",
-        Action = [
-          "ssm:GetParameters",
-          "ssm:GetParameter"
-        ],
-        Resource = "arn:aws:ssm:${var.region}:${module.global_variables.account_id}:parameter/${var.project}/*"
-      }
-    ]
-  })
-}
-
-resource "aws_iam_policy_attachment" "ssm_policy_attachment" {
-  name       = "ssm_policy_attachment"
-  roles      = [aws_iam_role.lambda_role.name]
-  policy_arn = aws_iam_policy.ssm_policy.arn
-}
-
 resource "aws_iam_policy_attachment" "lambda_policy_attachment" {
   name       = "${var.project}-auth-policy-attachment"
   roles      = [aws_iam_role.lambda_role.name]
