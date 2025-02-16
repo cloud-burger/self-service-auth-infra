@@ -2,15 +2,24 @@ resource "aws_iam_role" "lambda_role" {
   name = "${var.project}-auth-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
-    Statement = [{
-      Action = [
-        "sts:AssumeRole"
-      ],
-      Principal = {
-        Service = "lambda.amazonaws.com"
+    Statement = [
+      {
+        Action = [
+          "sts:AssumeRole"
+        ],
+        Principal = {
+          Service = "lambda.amazonaws.com"
+        },
+        Effect = "Allow"
       },
-      Effect = "Allow"
-    }]
+      {
+        Effect : "Allow",
+        Action : [
+          "dynamodb:Query"
+        ],
+        Resource : "arn:aws:dynamodb:us-east-1:594646746001:table/self-service-customers-prod"
+      },
+    ]
   })
 }
 
