@@ -11,7 +11,7 @@ servers:
   - url: http://localhost:8080
     description: Local running
 paths:
-  /customer:
+  /customers:
     post:
       tags:
         - Customer
@@ -39,8 +39,8 @@ paths:
         httpMethod: POST
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
-        uri: ${load_balancer_uri}/customer
-  /customer/{documentNumber}:
+        uri: ${load_balancer_uri}/customers
+  /customers/{documentNumber}:
     get:
       tags:
         - Customer
@@ -62,10 +62,10 @@ paths:
         httpMethod: GET
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
-        uri: ${load_balancer_uri}/customer/{documentNumber}
+        uri: ${load_balancer_uri}/customers/{documentNumber}
         requestParameters:
           integration.request.path.documentNumber: method.request.path.documentNumber
-  /product:
+  /products:
     post:
       tags:
         - Product
@@ -93,7 +93,7 @@ paths:
         httpMethod: POST
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
-        uri: ${load_balancer_uri}/product
+        uri: ${load_balancer_uri}/products
     get:
       tags:
         - Product
@@ -113,8 +113,8 @@ paths:
         httpMethod: GET
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
-        uri: ${load_balancer_uri}/product/category
-  /product/{id}:
+        uri: ${load_balancer_uri}/products/category
+  /products/{id}:
     put:
       tags:
         - Product
@@ -144,7 +144,7 @@ paths:
         httpMethod: PUT
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
-        uri: ${load_balancer_uri}/product/{id}
+        uri: ${load_balancer_uri}/products/{id}
         requestParameters:
           integration.request.path.id: method.request.path.id
     delete:
@@ -170,10 +170,10 @@ paths:
         httpMethod: DELETE
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
-        uri: ${load_balancer_uri}/product/{id}
+        uri: ${load_balancer_uri}/products/{id}
         requestParameters:
           integration.request.path.id: method.request.path.id
-  /order:
+  /orders:
     post:
       tags:
         - Order
@@ -201,7 +201,7 @@ paths:
         httpMethod: POST
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
-        uri: ${load_balancer_uri}/order
+        uri: ${load_balancer_uri}/orders
     get:
       tags:
         - Order
@@ -225,8 +225,8 @@ paths:
         httpMethod: GET
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
-        uri: ${load_balancer_uri}/order
-  /order/{id}:
+        uri: ${load_balancer_uri}/orders
+  /orders/{id}:
     put:
       tags:
         - Order
@@ -254,10 +254,10 @@ paths:
         httpMethod: PUT
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
-        uri: ${load_balancer_uri}/order/{id}
+        uri: ${load_balancer_uri}/orders/{id}
         requestParameters:
           integration.request.path.id: method.request.path.id
-  /payment/{id}:
+  /payments/{orderId}:
     get:
       tags:
         - Payment
@@ -279,10 +279,10 @@ paths:
         httpMethod: GET
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
-        uri: ${load_balancer_uri}/payment/{id}
+        uri: ${load_balancer_uri}/payments/{orderId}
         requestParameters:
-          integration.request.path.id: method.request.path.id
-  /payment:
+          integration.request.path.orderId: method.request.path.orderId
+  /payments:
     post:
       tags:
         - Payment
@@ -308,7 +308,7 @@ paths:
         httpMethod: POST
         connectionType: VPC_LINK
         connectionId: ${vpc_link_id}
-        uri: ${load_balancer_uri}/payment
+        uri: ${load_balancer_uri}/payments
 components:
   parameters:
     PageSize:

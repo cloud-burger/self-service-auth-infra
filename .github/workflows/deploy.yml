@@ -11,7 +11,6 @@ on:
         type: choice
         description: Terraform Action
         options:
-          - plan
           - apply
           - destroy
 
@@ -20,26 +19,6 @@ env:
   AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
 jobs:
-  terraform_plan:
-    name: "Terraform Plan"
-    runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_dispatch' && github.event.inputs.action == 'plan'
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v1
-        with:
-          terraform_version: 1.8.2
-
-      - name: Terraform Init
-        run: terraform init
-
-      - name: Terraform Plan
-        run: terraform plan
-
   terraform_apply:
     name: "Terraform Apply"
     runs-on: ubuntu-latest
@@ -57,11 +36,8 @@ jobs:
       - name: Terraform Init
         run: terraform init
 
-      - name: Terraform Plan
-        run: terraform plan
-
       - name: Terraform Apply
-        run: terraform apply -auto-approve
+        run: terraform apply -var "commit_hash=${{ github.sha }}" -auto-approve
 
   terraform_destroy:
     name: "Terraform Destroy"

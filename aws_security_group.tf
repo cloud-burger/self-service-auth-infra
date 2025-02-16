@@ -9,12 +9,3 @@ resource "aws_security_group" "lambda_auth_sg" {
     cidr_blocks = ["0.0.0.0/0"]
   }
 }
-
-resource "aws_security_group_rule" "lambda_to_rds" {
-  type                     = "ingress"
-  from_port                = 5432 # Porta do banco de dados na instância RDS
-  to_port                  = 5432 # Porta do banco de dados na instância RDS
-  protocol                 = "tcp"
-  security_group_id        = local.rds_public_sg_id               # ID da security group da RDS
-  source_security_group_id = aws_security_group.lambda_auth_sg.id # ID da security group da Lambda
-}
