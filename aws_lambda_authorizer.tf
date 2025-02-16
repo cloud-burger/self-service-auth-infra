@@ -11,6 +11,7 @@ module "lambda_authorizer" {
   source_code_hash   = base64encode(sha256("${var.commit_hash}"))
 
   environment_variables = {
-    DADYNAMO_TABLE_CUSTOMERS = local.aws_dynamodb_table_customers
+    DYNAMO_TABLE_CUSTOMERS = local.aws_dynamodb_table_customers
+    AWS_REGION             = var.region
   }
 }
