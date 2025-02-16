@@ -12,6 +12,5 @@ module "lambda_authorizer" {
 
   environment_variables = {
     DYNAMO_TABLE_CUSTOMERS = local.aws_dynamodb_table_customers
-    AWS_REGION             = var.region
   }
 }
